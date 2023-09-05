@@ -89,9 +89,8 @@
     300 /**< The advertising interval (in units of 0.625 ms. This value corresponds to 187.5 ms). \
          */
 
-#define APP_ADV_INTERVAL1 900 //(in units of 0.625 ms.
 #define APP_ADV_DURATION \
-    1000 /**< The advertising duration (180 seconds) in units of 10 milliseconds. */
+    0 /**< The advertising duration (180 seconds) in units of 10 milliseconds. */
 
 #define APP_BLE_OBSERVER_PRIO \
     3 /**< Application's BLE observer priority. You shouldn't need to modify this value. */
@@ -675,10 +674,6 @@ static void advertising_init(void) {
     init.config.ble_adv_fast_enabled  = true;             //广播类型
     init.config.ble_adv_fast_interval = APP_ADV_INTERVAL; //广播间隔
     init.config.ble_adv_fast_timeout  = APP_ADV_DURATION; //广播超时
-
-    init.config.ble_adv_slow_enabled  = true;
-    init.config.ble_adv_slow_interval = APP_ADV_INTERVAL1;
-    init.config.ble_adv_slow_timeout  = 0;
 
     init.evt_handler = on_adv_evt;
 
