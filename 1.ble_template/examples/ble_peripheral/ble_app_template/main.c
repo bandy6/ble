@@ -121,6 +121,7 @@
 #define SEC_PARAM_MIN_KEY_SIZE    7                    /**< Minimum encryption key size. */
 #define SEC_PARAM_MAX_KEY_SIZE    16                   /**< Maximum encryption key size. */
 
+#define TX_POWER_LEVEL (4) //发射功率
 #define DEAD_BEEF                                                                                  \
     0xDEADBEEF /**< Value used as error code on stack dump, can be used to identify stack location \
                   on stack unwind. */
@@ -137,7 +138,8 @@ static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID; /**< Handle of the curr
 
 // YOUR_JOB: Use UUIDs for service(s) used in your application.
 static ble_uuid_t m_adv_uuids[] = /**< Universally unique service identifiers. */
-    {{BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE}};
+    {{BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE},
+     {BLE_UUID_BATTERY_SERVICE, BLE_UUID_TYPE_BLE}};
 
 static void advertising_start(bool erase_bonds);
 
@@ -636,6 +638,8 @@ static void advertising_init(void) {
     ble_advdata_service_data_t service_data;
     uint8_t ser_data[8] = {1, 2, 3, 4, 5, 6, 7}; //长度任意长度，总长度小于31
 
+    int8_t tx_power_level = TX_POWER_LEVEL; //发射功率
+
     memset(&init, 0, sizeof(init));
 
     // 1.具体名字在gap_params_init配置
@@ -663,6 +667,8 @@ static void advertising_init(void) {
     init.advdata.p_service_data_array = &service_data;
     //因为只加入一个服务数据， 所以服务数据数量设置为 1
     init.advdata.service_data_count = 1;
+
+    init.advdata.p_tx_power_level = &tx_power_level;
 
     init.config.ble_adv_fast_enabled  = true;             //广播类型
     init.config.ble_adv_fast_interval = APP_ADV_INTERVAL; //广播间隔
