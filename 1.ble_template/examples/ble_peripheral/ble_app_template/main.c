@@ -269,8 +269,10 @@ static void gap_params_init(void) {
     ble_gap_conn_params_t gap_conn_params;
     ble_gap_conn_sec_mode_t sec_mode;
 
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
+    //安全模式， 安全权限设置
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode); //连接模式，主要是是否需要加密
 
+    //设备名称设置
     err_code =
         sd_ble_gap_device_name_set(&sec_mode, (const uint8_t*)DEVICE_NAME, strlen(DEVICE_NAME));
     APP_ERROR_CHECK(err_code);
@@ -284,11 +286,13 @@ static void gap_params_init(void) {
 
     memset(&gap_conn_params, 0, sizeof(gap_conn_params));
 
+    //连接参数配置
     gap_conn_params.min_conn_interval = MIN_CONN_INTERVAL;
     gap_conn_params.max_conn_interval = MAX_CONN_INTERVAL;
     gap_conn_params.slave_latency     = SLAVE_LATENCY;
     gap_conn_params.conn_sup_timeout  = CONN_SUP_TIMEOUT;
 
+    //连接参数设置， 主要是时间间隔设置
     err_code = sd_ble_gap_ppcp_set(&gap_conn_params);
     APP_ERROR_CHECK(err_code);
 }
@@ -742,7 +746,14 @@ static void advertising_start(bool erase_bonds) {
         APP_ERROR_CHECK(err_code);
     }
 }
-
+void mac_set(void) {
+    ble_gap_addr_t addr;
+    ret_code_t err_code = sd_ble_gap_addr_get(&addr);
+    APP_ERROR_CHECK(err_code);
+    addr.addr[0] += 1;
+    err_code = sd_ble_gap_addr_set(&addr);
+    APP_ERROR_CHECK(err_code);
+}
 /**@brief Function for application main entry.
  */
 int main(void) {
@@ -760,7 +771,7 @@ int main(void) {
     services_init();
     conn_params_init();
     peer_manager_init();
-
+    mac_set();
     // Start execution.
     NRF_LOG_INFO("Template example started.");
     application_timers_start();
